@@ -3,6 +3,12 @@ from enum import Enum
 import sys
 import matplotlib.pyplot as plt
 class GA:
+    # cP - crossoverProbability, the probability of each new individual 
+    # being created with crossover rather than just being picked 
+    # from the previous population
+    # mP - mutationProbability, the probability that an individual undergoes a mutation
+    # popSize - number of individuals in each generation
+    # tournamentSize - in performing tournament selection, how many random individuals should be sampled
     # chromosome length includes the main hall at position 0 but it will not be displayed at the end
     def __init__(self, cP,mP,popSize,tournamentSize):
         self.cP = cP
@@ -17,6 +23,12 @@ class GA:
         self.noImprovGens = 0
         self.minHappiness = 0
 
+    # pM - production modifier, each planet has a different modifier to spice production, you can find out what it is
+    # by placing a single factory and reading how much spice per link it produces, this is the modifier
+    # cM - cost modifier, each planet has different costs, but ratios between building types are the same
+    # to find out your cM, divide the cost of a house on your planet by 1600
+    # minHappiness - the minimum happiness of the solution
+    # links is a list of edges, without duplicates (i.e. the coordinates in the adjacency matrix where connections are present but only from bottom left triangle)
     def findSolution(self,pM,cM,links,minHappiness):
         self.links = links
         self.minHappiness = minHappiness
@@ -226,5 +238,5 @@ def  evaluate(links,buildings):
         
 if __name__ == "__main__":
     layoutTest = [(0,2),(0,4),(0,7),(0,9),(0,10),(1,2),(1,10),(2,3),(3,4),(3,5),(4,5),(5,6),(6,7),(6,8),(7,8),(8,9),(9,10),(10,11)]
-    ga = GA(0.8,0.09,150,7)
-    ga.findSolution(12,16,layoutTest,0)
+    ga = GA(0.8,0.09,150,7) # pretty optimal parameters
+    ga.findSolution(12,16,layoutTest,0) 
