@@ -238,6 +238,8 @@ def  evaluate(links,buildings):
     return (productionPoints,happinessPoints+happiness,cost)
         
 if __name__ == "__main__":
+    # see https://oresyndicate.forumotion.com/t34-spice-production-maximizing-colony-building-placement-guide
+    # for possible layouts
     colony = [(0,2),(0,4),(0,7),(0,9),(0,10),(1,2),(1,10),(2,3),(3,4),(3,5),(4,5),(5,6),(6,7),(6,8),(7,8),(8,9),(9,10),(10,11)]
     #5 city hall connections
     homeworld1 = [(0,2),(0,5),(0,7),(0,11),(1,2),(2,3),(2,11),(4,5),(5,6),(5,7),(6,7),(7,8),(7,9),(9,11),(9,10),(10,11)]
