@@ -1,7 +1,7 @@
 import random
 from enum import Enum
 import sys
-import matplotlib.pyplot as plt
+
 class GA:
     # cP - crossoverProbability, the probability of each new individual 
     # being created with crossover rather than just being picked 
@@ -29,7 +29,9 @@ class GA:
     # to find out your cM, divide the cost of a house on your planet by 1600
     # minHappiness - the minimum happiness of the solution
     # links is a list of edges, without duplicates (i.e. the coordinates in the adjacency matrix where connections are present but only from bottom left triangle)
-    def findSolution(self,pM,cM,links,minHappiness):
+    # weights is a collection of 3 floats between 0 and 1, all summing to 1
+    # indicating the weighting between importance of production,cost and happiness
+    def findSolution(self,pM,cM,links,minHappiness,weights):
         self.links = links
         self.minHappiness = minHappiness
 
@@ -39,7 +41,7 @@ class GA:
 
         # evaluate the first population
         for p in self.population:
-            self.evaluateIndividual(p)
+            self.evaluateIndividual(p,weights)
 
         # perform evolution
         while not(self.converged(bestFitness2-bestFitness)):
@@ -55,7 +57,7 @@ class GA:
     
             # generate new population
 
-            newPop = self.generateNewPopulation()
+            newPop = self.generateNewPopulation(weights)
 
             # find the best in new population
             best2 = None
@@ -75,13 +77,19 @@ class GA:
         return best
 
         
-    def generateNewPopulation(self):
+    def generateNewPopulation(self,weights):
 
-        # evaluate the old population
+        elite = None
+        eliteFitness = -1
+        # evaluate the old population and find the elite
         for p in self.population:
-            self.evaluateIndividual(p)
+            self.evaluateIndividual(p,weights)
+            if p.fitness > eliteFitness:
+                elite = p
+                eliteFitness = p.fitness
 
-        newPopulation = []
+        # keep the elite from the previous population
+        newPopulation = [elite]
 
         while len(newPopulation) < self.popSize:
             # for each individual determine if he's a survivor from the previous population
@@ -155,14 +163,18 @@ class GA:
             if random.random() < p:
                 g = [Building.H,Building.F,Building.E,Building._][random.randint(0,2)]
 
-    def evaluateIndividual(self,a):
-            a.fitness = self.evaluationFunction(a)
+    def evaluateIndividual(self,a,weights):
+            a.fitness = self.evaluationFunction(a,weights)
 
-    def evaluationFunction(self,a):
+    def evaluationFunction(self,a,weights):
         productionPoints,happinessPoints,costPoints = evaluate(self.links,a.genes)
         
-        negativeHappinessPen = -10000 if happinessPoints < self.minHappiness else 0 
-        return negativeHappinessPen + ((50/(costPoints+1))**2) + ((productionPoints)**2) 
+        negativeHappinessPen = -10 if happinessPoints < self.minHappiness else 0 
+        productionFactor = productionPoints / len(self.links)
+        costFactor = (1/(costPoints + 1))
+        happinessFactor = min(1,happinessPoints/5)
+
+        return negativeHappinessPen + (weights[0])*productionFactor + (weights[1])*costFactor + (weights[2])*happinessFactor
 
 
 class Chromosome:
@@ -240,6 +252,7 @@ def  evaluate(links,buildings):
 if __name__ == "__main__":
     # see https://oresyndicate.forumotion.com/t34-spice-production-maximizing-colony-building-placement-guide
     # for possible layouts
+
     colony = [(0,2),(0,4),(0,7),(0,9),(0,10),(1,2),(1,10),(2,3),(3,4),(3,5),(4,5),(5,6),(6,7),(6,8),(7,8),(8,9),(9,10),(10,11)]
     #5 city hall connections
     homeworld1 = [(0,2),(0,5),(0,7),(0,11),(1,2),(2,3),(2,11),(4,5),(5,6),(5,7),(6,7),(7,8),(7,9),(9,11),(9,10),(10,11)]
@@ -254,6 +267,7 @@ if __name__ == "__main__":
     #5 city hall connections
     homeworld6 = [(0,2),(0,4),(0,5),(0,9),(0,10),(1,2),(2,3),(2,4),(3,4),(5,6),(6,7),(7,8),(7,9),(8,9),(9,10),(10,11)]
     
-    ga = GA(0.8,0.09,1000,7) # pretty optimal parameters
-    ga.findSolution(12,16,homeworld6,0) 
+    ga = GA(0.6,0.09,10000,10) # pretty optimal parameters
+    #weights - prod,cost,happ
+    ga.findSolution(12,16,colony,0,[0.3,0.3,0.3]) 
 
