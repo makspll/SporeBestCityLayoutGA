@@ -228,6 +228,7 @@ def  evaluate(links,buildings):
         # no effect
         else:
             continue
+
     # evaluate total building cost
     cost = sum([x.cost() for x in buildings]) - buildings[0].cost()
     happiness = sum([x.happiness() for x in buildings])
@@ -237,6 +238,20 @@ def  evaluate(links,buildings):
     return (productionPoints,happinessPoints+happiness,cost)
         
 if __name__ == "__main__":
-    layoutTest = [(0,2),(0,4),(0,7),(0,9),(0,10),(1,2),(1,10),(2,3),(3,4),(3,5),(4,5),(5,6),(6,7),(6,8),(7,8),(8,9),(9,10),(10,11)]
-    ga = GA(0.8,0.09,150,7) # pretty optimal parameters
-    ga.findSolution(12,16,layoutTest,0) 
+    colony = [(0,2),(0,4),(0,7),(0,9),(0,10),(1,2),(1,10),(2,3),(3,4),(3,5),(4,5),(5,6),(6,7),(6,8),(7,8),(8,9),(9,10),(10,11)]
+    #5 city hall connections
+    homeworld1 = [(0,2),(0,5),(0,7),(0,11),(1,2),(2,3),(2,11),(4,5),(5,6),(5,7),(6,7),(7,8),(7,9),(9,11),(9,10),(10,11)]
+    #4 city hall connections
+    homeworld2 = [(0,2),(0,3),(0,8),(0,9),(1,11),(2,3),(2,9),(3,4),(3,5),(4,5),(5,6),(7,8),(8,9),(9,11),(10,11)]
+    #2 city hall connections
+    homeworld3 = [(0,8),(0,10),(1,2),(2,3),(3,5),(3,6),(4,5),(6,7),(6,8),(7,8),(8,10),(9,10),(10,11)]
+    #5 city hall connections
+    homeworld4 = [(0,2),(0,4),(0,6),(0,8),(0,10),(1,2),(2,3),(2,4),(3,5),(4,5),(4,6),(5,6),(6,7),(6,8),(7,8),(8,9),(8,10),(9,10),(10,11)]
+    #4 city hall connetions
+    homeworld5 = [(0,2),(0,5),(0,8),(0,9),(1,2),(2,3),(2,4),(3,4),(4,6),(4,5),(5,8),(6,7),(7,8),(8,9),(9,10),(9,11)]
+    #5 city hall connections
+    homeworld6 = [(0,2),(0,4),(0,5),(0,9),(0,10),(1,2),(2,3),(2,4),(3,4),(5,6),(6,7),(7,8),(7,9),(8,9),(9,10),(10,11)]
+    
+    ga = GA(0.8,0.09,1000,7) # pretty optimal parameters
+    ga.findSolution(12,16,homeworld6,0) 
+
